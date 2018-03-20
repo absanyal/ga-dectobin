@@ -4,7 +4,8 @@
 import numpy as np
 
 #global parameters
-dnalen = 10
+dnalen = 20
+mutationchance = 0.50
 
 # Generator of ID numbers
 def id_num():
@@ -26,13 +27,38 @@ class amibi:
         self.dna = dna
     
     def creategamete(self, position, segments):
-        if (position == 'front'):
+        if (position == 0):
             return self.dna[:segments]
-        else:
+        if (position == 1):
             return self.dna[segments:]
+
+#World functions
+def mutate(originaldna):
+    dna = originaldna[:]
+    for i in range(len(dna)):
+        r = np.random.uniform()
+        if (r <= mutationchance):
+            if (originaldna[i] == 0):
+                dna[i] == 1
+            if (originaldna[i] == 1):
+                dna[i] = 0
+    return dna
+
+
+def makechild(p1, p2):
+    r = np.random.randint(1, 10)
+    dna1 = p1.creategamete(0, r)
+    dna2 = p2.creategamete(1, r)
+    childdna = mutate(dna1 + dna2)
+    return amibi(childdna)
 
 #testing code
 family = [amibi(randdnagen()) for i in range(10)]
 
-for a in family:
-    print(a.dna)
+mom = family[0]
+dad = family[1]
+child = makechild(mom, dad)
+
+print(mom.dna)
+print(dad.dna)
+print(child.dna)
